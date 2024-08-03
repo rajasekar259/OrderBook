@@ -21,16 +21,20 @@ struct ProductListItemView: View {
                 HStack {
                     Toggle(isOn: $isMarked, label: {
                         VStack(alignment: .leading) {
-                            Text(product.name)
-                                .fontWeight(.semibold)
-                                .font(.title3)
-                                .foregroundStyle(.primary)
-                            Text(product.detail)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                            Group {
+                                Text(product.name)
+                                    .fontWeight(.semibold)
+                                    .font(.title3)
+                                    .foregroundStyle(.primary)
+                                    
+                                Text(product.detail)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .multilineTextAlignment(.leading)
                         }
                     })
-                    .toggleStyle(.button)
+                    .toggleStyle(ChecklistToggleStyle())
                     .onChange(of: isMarked, { product.isDone = isMarked })
                     
                     Spacer()
@@ -65,4 +69,21 @@ struct ProductListItemView: View {
 
 #Preview {
     ProductListItemView(product: Product(purchaseList: .init(id: "PurchaseListID", name: "List Name"), id: "id", name: "Name", detail: "Detail"), isMarked: false)
+}
+
+struct ChecklistToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            configuration.isOn.toggle()
+        } label: {
+            HStack {
+                Image(systemName: configuration.isOn
+                        ? "checkmark.circle.fill"
+                        : "circle")
+                configuration.label
+            }
+        }
+        .tint(.primary)
+        .buttonStyle(.borderless)
+    }
 }
